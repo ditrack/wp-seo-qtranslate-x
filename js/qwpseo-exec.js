@@ -71,8 +71,15 @@ function(){
 			// The above code isn't checked.
 			app.rawData = app.callbacks.getData();
 
-			// update SEO title field
-            snippetEditor.data.title = app.rawData.snippetTitle;
+            // update SEO title field
+            if (snippetEditor.data.title != defaultTitle) {
+                if (!app.rawData.snippetTitle) {
+                    snippetEditor.data.title = defaultTitle;
+                } else {
+                    snippetEditor.data.title = app.rawData.snippetTitle;
+                }
+            }
+
             // update Meta description field
             snippetEditor.data.description = app.rawData.snippetMeta;
 
