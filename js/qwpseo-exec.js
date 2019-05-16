@@ -3,8 +3,10 @@
  /wp-admin/post-new.php
  /wp-admin/term.php
 */
-jQuery(document).ready(
-function($){
+jQuery(window).on("YoastSEO:ready",
+function(){
+    var $ = jQuery;
+
 	if(!window.YoastSEO.app)
 		return;
 
@@ -39,19 +41,6 @@ function($){
 		wpseoReplaceVarsL10n.replace_vars = qreplace_vars[qTranslateConfig.activeLanguage];
 	}
 
-	var focuskw_input = $('#yoast_wpseo_focuskw');
-	var focuskw_edit = $('#yoast_wpseo_focuskw_text_input');
-	focuskw_edit.addClass('qtranxs-translatable');
-
-	//var title_snippet = $('#snippet_title');
-	//var title_input = $('#yoast_wpseo_title');
-	var title_edit = $('#snippet-editor-title');
-	title_edit.addClass('qtranxs-translatable');
-
-	//var metadesc_input = $('#yoast_wpseo_metadesc');
-	var metadesc_edit = $('#snippet-editor-meta-description');
-	metadesc_edit.addClass('qtranxs-translatable');
-
 	var removeChildren = function(e){
 		while(e.firstChild) {
 			e.removeChild(e.firstChild);
@@ -67,7 +56,8 @@ function($){
 				wpseoReplaceVarsL10n.replace_vars = qreplace_vars[lang];
 			}
 
-			var app = YoastSEO.app;
+			var app = YoastSEO.app,
+                snippetEditor = YoastSEO.store.getState().snippetEditor;
 
 			var e = document.getElementById(app.config.targets.output);
 			if(e)
@@ -77,26 +67,17 @@ function($){
 			if(c)
 				removeChildren(c);
 
-			//app.showLoadingDialog();
-
-			focuskw_edit.val(focuskw_input.val());//temporary unil Yoast notice their error with duplicated entry in db and fix it
+			// Working part
+			// The above code isn't checked.
 			app.rawData = app.callbacks.getData();
 
-			//focuskw_edit.val(app.rawData.keyword);
-			metadesc_edit.val(app.rawData.snippetMeta);
-			title_edit.val(app.rawData.snippetTitle);
+			// update SEO title field
+            snippetEditor.data.title = app.rawData.snippetTitle;
+            // update Meta description field
+            snippetEditor.data.description = app.rawData.snippetMeta;
 
-			app.snippetPreview.data.title = app.rawData.snippetTitle;
-			//app.snippetPreview.data.urlPath = app.rawData.snippetCite;
-			app.snippetPreview.data.metaDesc = app.rawData.snippetMeta;
-			//app.snippetPreview.data = {};
-			//app.runAnalyzer();
-
-			//app.getData();
-			//app._pureRefresh();
 			app.refresh();
-			//app.snippetPreview.refresh();
-			//app.removeLoadingDialog();
+            // Working part end
 		}
 	);
 
