@@ -56,8 +56,9 @@ function(){
 				wpseoReplaceVarsL10n.replace_vars = qreplace_vars[lang];
 			}
 
-			var app = YoastSEO.app,
-                snippetEditor = YoastSEO.store.getState().snippetEditor;
+            var app = YoastSEO.app,
+                snippetEditor = YoastSEO.store.getState().snippetEditor,
+                defaultTitle = (window.wpseoPostScraperL10n != null) ? window.wpseoPostScraperL10n.title_template : '';
 
 			var e = document.getElementById(app.config.targets.output);
 			if(e)
@@ -83,7 +84,16 @@ function(){
             // update Meta description field
             snippetEditor.data.description = app.rawData.snippetMeta;
 
-			app.refresh();
+            //update replacement variables
+            if (snippetEditor.replacementVariables && Array.isArray(snippetEditor.replacementVariables)) {
+                snippetEditor.replacementVariables.forEach(function (variable, index) {
+                    if (variable['name'] === 'title') {
+                        snippetEditor.replacementVariables[index]['value'] = $('#title').val();
+                    }
+                })
+            }
+
+            app.refresh();
             // Working part end
 		}
 	);
